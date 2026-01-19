@@ -32,13 +32,20 @@ func hello(w http.ResponseWriter, req *http.Request) {
 func headers(w http.ResponseWriter, req *http.Request) {
 	for name, headers := range req.Header {
 		for _, h := range headers {
-			fmt.Fprintf(w, "%\v", "%\n", name, h)
+			fmt.Println(name, h)
 		}
 	}
 }
 
 func main() {
 	http.HandleFunc("/", hello)
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/headers", headers)
 
+	fmt.Println("Server starting on :8080...")
+
+	// Wrap ListenAndServe in log.Fatal to see why it fails
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Printf("Server failed to start: %v\n", err)
+	}
 }
